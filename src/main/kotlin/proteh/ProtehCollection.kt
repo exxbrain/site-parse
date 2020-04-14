@@ -9,17 +9,27 @@ import org.jsoup.nodes.Element
 import java.math.BigDecimal
 
 
-class ProtehCollection(private val manufacturer: String, private val startId: Long, private val doc: Document) : Collection {
+class ProtehCollection(private val manufacturer: String, private val startId: Long, private val categoryId: Long, private val doc: Document) : Collection {
 
     private val toLatinTrans = Transliterator.getInstance("Russian-Latin/BGN")
     override val products: List<Product>
         get() {
-            return doc
+            val products = doc
                 .select(".muuri-item")
-                .mapIndexed{ index, element ->  createProduct(index + startId, element) }
+                .mapIndexed{ index, element ->  createProduct(index, element) }
+
+            products
+                .groupBy { it.seo }
+                .filter { it.value.size > 1 }
+                .forEach { entry ->
+                    entry.value.forEach {
+                        it.seo = "${it.seo}-${it.productId}"
+                    }
+                }
+            return products
         }
 
-    private fun createProduct(productId: Long, element: Element): Product {
+    private fun createProduct(index: Int, element: Element): Product {
         val str = element.toString()
 
         val a = element.select("a").first()
@@ -52,9 +62,15 @@ class ProtehCollection(private val manufacturer: String, private val startId: Lo
             priceBigDecimal = price[1].toBigDecimal()
         }
 
+        val name = element.attr("data-shortname").trim()
+
+        val seo = toLatinTrans.transliterate("${name}-${articul}")
+            .toLowerCase()
+            .replace(Regex("[^a-z0-9-]"), "_")
+
         return Product(
-            productId = productId,
-            name = element.attr("data-shortname").trim(),
+            productId = index + startId,
+            name = name,
             images = images,
             manufacturer = manufacturer,
             model = articul,
@@ -64,7 +80,9 @@ class ProtehCollection(private val manufacturer: String, private val startId: Lo
             width = width,
             height = height,
             category = element.attr("data-cat"),
-            sku = element.attr("data-id")
+            categoryId = categoryId,
+            sku = element.attr("data-id"),
+            seo = seo
         )
     }
 }

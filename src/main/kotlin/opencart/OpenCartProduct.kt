@@ -10,7 +10,7 @@ internal data class OpenCartProduct(private val product: Product, private val im
         return linkedMapOf(
             "product_id" to product.productId,
             "name(ru-ru)" to "${product.name} ${product.model}",
-            "categories" to product.category,
+            "categories" to product.categoryId,
             "sku" to product.sku,
             "upc" to "",
             "ean" to "",

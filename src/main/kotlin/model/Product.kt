@@ -9,11 +9,13 @@ class Product(
     val manufacturer: String = "",
     val images: List<RemoteFile> = listOf(),
     val category: String = "",
+    val categoryId: Long,
     val price: BigDecimal = 0.toBigDecimal(),
     val sku: String = "",
     val weight: Double = .0,
     val length: Double = .0,
     val width: Double = .0,
     val height: Double = .0,
-    val description: String = ""
+    val description: String = "",
+    var seo: String
 )
