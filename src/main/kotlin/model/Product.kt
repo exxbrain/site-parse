@@ -1,20 +1,19 @@
 package model
 
-data class Product(
+import java.math.BigDecimal
+
+class Product(
     val productId: Long,
-    val name: String,
-    val categories: List<Long>,
-    val sku: String,
-    val model: String,
-    val manufacturer: String,
-    val images: List<HttpFile>,
-    val weight: Float,
-    val length: Float,
-    val width: Float,
-    val height: Float,
-    val description: String,
-    val metaTitle: String,
-    val metaDescription: String,
-    val metaKeywords: String,
-    val tags: String
-    )
+    val name: String = "",
+    val model: String = "",
+    val manufacturer: String = "",
+    val images: List<RemoteFile> = listOf(),
+    val category: String = "",
+    val price: BigDecimal = 0.toBigDecimal(),
+    val sku: String = "",
+    val weight: Double = .0,
+    val length: Double = .0,
+    val width: Double = .0,
+    val height: Double = .0,
+    val description: String = ""
+)

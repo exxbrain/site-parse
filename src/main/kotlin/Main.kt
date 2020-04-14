@@ -1,13 +1,11 @@
-import org.asynchttpclient.*
-
-
-val client = Dsl.asyncHttpClient()
-
-
-
 fun main(args: Array<String>) {
-    Collection1("https://www.proteh.ru/argo/", "argo").save()
 
+
+    //Collection1("https://www.proteh.ru/argo/", "argo").save()
+    //val doc = Jsoup.connect("https://www.proteh.ru/argo/").get()
+//    val data = ProtehData(doc)
+//    val openCartCollection = OpenCartCollection(data)
+//    openCartCollection.save("./argo", "./argo/korpusnaya_mebel/operativnaya_mebel/argo")
     /*
     doc.select(".flexslider .slide").forEach{ x: Element ->
         run {
@@ -20,6 +18,3 @@ fun main(args: Array<String>) {
     }
     */
 }
-
-val String.extension: String
-    get() = this.substringAfterLast('.', "")
