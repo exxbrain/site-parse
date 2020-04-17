@@ -42,6 +42,7 @@ internal class ProtehCollectionTest {
             assertTrue(!actual.images.any())
         } else {
             assertEquals(data.expected.images[0].url, actual.images[0].url)
+            assertEquals(data.expected.images[0].fileName, actual.images[0].fileName)
         }
         assertEquals(data.expected.sku, actual.sku)
     }
@@ -71,7 +72,7 @@ internal class ProtehCollectionTest {
                     width = 0.4,
                     height = 76.0,
                     price = 1783.toBigDecimal(),
-                    images = listOf(RemoteFile("https://proteh.ru/products/img/00000007831.png")),
+                    images = listOf(RemoteFile("https://proteh.ru/products/img/00000007831.png", "a-302_s_f_1")),
                     sku = "00000007831",
                     seo = "komplekt_steklyannykh_dverey-a-302_s_f-1"
                 )
@@ -89,7 +90,7 @@ internal class ProtehCollectionTest {
                     width = 0.4,
                     height = 76.0,
                     price = 2780.toBigDecimal(),
-                    images = listOf(RemoteFile("https://proteh.ru/products/img/00000007832.png")),
+                    images = listOf(RemoteFile("https://proteh.ru/products/img/00000007832.png", "a-302_s_f_2")),
                     sku = "00000007832",
                     seo = "komplekt_steklyannykh_dverey-a-302_s_f-2"
                 )
@@ -107,7 +108,7 @@ internal class ProtehCollectionTest {
                     width = 73.0,
                     height = 76.0,
                     price = 2809.toBigDecimal(),
-                    images = listOf(RemoteFile("https://proteh.ru/products/img/F0000003659.png")),
+                    images = listOf(RemoteFile("https://proteh.ru/products/img/F0000003659.png", "a-002_11")),
                     sku = "F0000003659",
                     seo = "stol_rabochiy-a-002"
                 )
@@ -125,7 +126,7 @@ internal class ProtehCollectionTest {
                     width = 73.0,
                     height = 76.0,
                     price = 7717.toBigDecimal(),
-                    images = listOf(RemoteFile("https://proteh.ru/products/img/F0000009577.png")),
+                    images = listOf(RemoteFile("https://proteh.ru/products/img/F0000009577.png", "am-002_101")),
                     sku = "F0000009577",
                     seo = "stol_na_metallokarkase-am-002"
                 )
@@ -146,6 +147,24 @@ internal class ProtehCollectionTest {
                     images = listOf(),
                     sku = "F0000014743",
                     seo = "stol_peregovornyy_na_metallokarkase-am-004_123"
+                )
+            ),
+            TestData(input = 143,
+                expected = Product(
+                    productId = 144,
+                    name = "Бенч двойной на 6 рабочих мест",
+                    model = "АМБ-005.60-6",
+                    description = "Бенч двойной на 6 рабочих мест АМБ-005.60-6 ясень шимо.",
+                    manufacturer = "Программа техно",
+                    category = "Столы",
+                    categoryId = 50,
+                    length = 540.0,
+                    width = 123.6,
+                    height = 76.0,
+                    price = 0.toBigDecimal(),
+                    images = listOf(RemoteFile("https://proteh.ru/products/img/F0000011792.png", "amb-005_60-6_144")),
+                    sku = "F0000011792",
+                    seo = "bench_dvoynoy_na_6_rabochikh_mest-amb-005_60-6"
                 )
             )
         )

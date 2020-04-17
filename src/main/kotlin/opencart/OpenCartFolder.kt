@@ -2,9 +2,9 @@ package opencart
 
 import excel.ExcelWb
 import excel.WithData
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import model.RemoteFile
+import org.asynchttpclient.Response
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
@@ -18,19 +18,23 @@ class OpenCartFolder(folder: String) {
         }
     }
 
-    fun save(images: List<RemoteFile>, imgFolder: String) {
-        val batchSize = 50
-        val sublist = images.subList(0, if (images.size < batchSize) images.size else batchSize)
-        runBlocking {
-            for (image in sublist) {
-                launch {
-                    println(image.fileName)
-                    image.download("${folder}/${imgFolder.stringByRemovingLastChar('/')}")
+    suspend fun save(images: List<RemoteFile>, imgFolder: String) = coroutineScope {
+        mkdir(imgFolder)
+        images.size
+        val batchSize = 20
+        val chunks = Math.floor(images.size.toDouble() / batchSize).toInt()
+        for (i in 0..chunks) {
+            val startIndex = i * batchSize
+            var endIndex = startIndex + batchSize
+            endIndex = if (endIndex > images.lastIndex) images.lastIndex + 1 else endIndex
+            val deferreds = images.subList(startIndex, endIndex).map {
+                async(Dispatchers.IO) {
+                    println(it.fileName)
+                    it.download("${folder}/${imgFolder.stringByRemovingLastChar('/')}")
                 }
             }
-        }
-        if (images.size > batchSize) {
-            save(images.subList(batchSize, images.lastIndex), imgFolder)
+            deferreds.awaitAll()
+            println("$i. --------")
         }
     }
 
@@ -45,13 +49,21 @@ class OpenCartFolder(folder: String) {
         wb.save("${folder}/${fileName}")
     }
 
-    fun save(image: RemoteFile, imgFolder: String) {
+    suspend fun save(image: RemoteFile, imgFolder: String) {
+        mkdir(imgFolder)
         save(listOf(image), imgFolder)
     }
 
     fun clear() {
         val file = File(folder)
         file.deleteRecursively()
+        if (!file.exists() && !file.mkdirs()) {
+            throw Exception("AAA")
+        }
+    }
+
+    fun mkdir(dir: String) {
+        val file = File("$folder/$dir")
         if (!file.exists() && !file.mkdirs()) {
             throw Exception("AAA")
         }

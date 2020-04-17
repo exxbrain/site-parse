@@ -3,6 +3,7 @@ import model.Collection
 import model.RemoteFile
 import opencart.OpenCartFolder
 import excel.WithData
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -26,8 +27,9 @@ internal class FileSystemTest {
         val imgFolder = "korpusnaya_mebel/operativnaya_mebel/argo/"
         val image =
             RemoteFile("http://www.oc.ralfinter.ru/image/cache/catalog/Жалюзи-вместо-штор-1140x380.jpg")
-        fileSystem.save(image, imgFolder)
-
+        runBlocking {
+            fileSystem.save(image, imgFolder)
+        }
         assertTrue(File("./test/argo/korpusnaya_mebel/operativnaya_mebel/argo/${image.fileName}").exists())
     }
 

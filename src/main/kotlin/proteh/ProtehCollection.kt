@@ -31,6 +31,7 @@ class ProtehCollection(private val manufacturer: String, private val startId: Lo
 
     private fun createProduct(index: Int, element: Element): Product {
         val str = element.toString()
+        val productId = index + startId
 
         val a = element.select("a").first()
         val dataCaption = a.attr("data-caption")
@@ -40,10 +41,7 @@ class ProtehCollection(private val manufacturer: String, private val startId: Lo
         val articul = element.attr("data-art")
 
         var imageName = toLatinTrans.transliterate(articul)
-            .replace(".", "_")
-            .replace("/", "_")
-
-        imageName = "${imageName}_${element.attr("data-id")}".toLowerCase()
+        imageName = "${imageName}_$productId".toLowerCase().replace(Regex("[^a-z0-9-]"), "_")
         val images = if (imageUrl == "/img/noImage.png") listOf() else listOf(RemoteFile(imageUrl, imageName))
 
         val sizes = Regex("(\\d+)x(\\d+)x(\\d+)").find(str)?.groupValues
@@ -69,7 +67,7 @@ class ProtehCollection(private val manufacturer: String, private val startId: Lo
             .replace(Regex("[^a-z0-9-]"), "_")
 
         return Product(
-            productId = index + startId,
+            productId = productId,
             name = name,
             images = images,
             manufacturer = manufacturer,

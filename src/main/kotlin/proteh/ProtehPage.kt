@@ -1,5 +1,6 @@
 package proteh
 
+import kotlinx.coroutines.runBlocking
 import opencart.OpenCartCollection
 import opencart.OpenCartFolder
 import org.jsoup.Jsoup
@@ -14,11 +15,16 @@ class ProtehPage(private val filePath: String) {
 
         val header = ProtehHeader("https://www.proteh.ru/argo", doc)
         folder.save(header.text, "header.txt")
-        folder.save(header.galleryImages, "korpusnaya_mebel/operativnaya_mebel/argo/gallery")
+        runBlocking {
+            folder.save(header.galleryImages, "korpusnaya_mebel/operativnaya_mebel/argo/gallery")
+        }
 
         val collection = OpenCartCollection(ProtehCollection("Программа техно", 250, 90, doc))
 
         folder.save(collection.getData("korpusnaya_mebel/operativnaya_mebel/argo/yasen-shimo"), "products.xls")
-        folder.save(collection.getImages(), "korpusnaya_mebel/operativnaya_mebel/argo/yasen-shimo")
+
+        runBlocking {
+            folder.save(collection.getImages(), "korpusnaya_mebel/operativnaya_mebel/argo/yasen-shimo")
+        }
     }
 }

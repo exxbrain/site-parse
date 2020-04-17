@@ -1,43 +1,50 @@
 package model
 
+import kotlinx.coroutines.CancellableContinuation
+import kotlinx.coroutines.suspendCancellableCoroutine
+import org.asynchttpclient.AsyncCompletionHandler
+import org.asynchttpclient.AsyncHandler
 import org.asynchttpclient.Dsl.asyncHttpClient
+import org.asynchttpclient.HttpResponseBodyPart
 import org.asynchttpclient.Response
 import java.io.File
-import java.nio.file.Files
-import java.nio.file.StandardCopyOption
+import java.io.FileOutputStream
 import java.util.*
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.suspendCoroutine
+
 
 data class RemoteFile (
     val url: String,
     private var fileNameWithoutExtension: String = "${UUID.randomUUID()}"
-){
+): Downloadable {
     val fileName = "$fileNameWithoutExtension.${url.extension}"
 
 
-    suspend fun download(folder: String) = suspendCoroutine { continuation: Continuation<Response> ->
+    override suspend fun download(folder: String) = suspendCancellableCoroutine { continuation: CancellableContinuation<Response> ->
         val file = File("${folder}/${fileName}")
-        if (!file.parentFile.exists() && !file.parentFile.mkdirs()) {
-            throw Exception("AAA")
-        }
         file.createNewFile()
-
+        val stream = FileOutputStream(file)
         asyncHttpClient().use {
-            val resonse = it.prepareGet(url)
-                .execute()
+            val response = it.prepareGet(url)
+                .execute(object : AsyncCompletionHandler<FileOutputStream>() {
+                    @Throws(java.lang.Exception::class)
+                    override fun onBodyPartReceived(bodyPart: HttpResponseBodyPart): AsyncHandler.State {
+                        stream.channel.write(bodyPart.bodyByteBuffer)
+                        return AsyncHandler.State.CONTINUE
+                    }
+
+                    override fun onThrowable(t: Throwable) {
+                        continuation.resumeWith(Result.failure(t))
+                    }
+
+                    @Throws(java.lang.Exception::class)
+                    override fun onCompleted(response: Response): FileOutputStream? {
+                        stream.close()
+                        continuation.resumeWith(Result.success(response))
+                        return stream
+                    }
+                })
                 .toCompletableFuture()
-                .exceptionally {
-                    continuation.resumeWith(Result.failure(it))
-                    return@exceptionally null
-                }
-                .thenApply {
-                    Files.copy(it.responseBodyAsStream, file.toPath(), StandardCopyOption.REPLACE_EXISTING)
-                    println(file.toPath())
-                    continuation.resumeWith(Result.success(it))
-                    return@thenApply it
-                }
-            resonse.join()
+            response.join()
         }
     }
 }
