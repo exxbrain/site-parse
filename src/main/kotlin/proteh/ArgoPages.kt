@@ -40,7 +40,6 @@ class ArgoPages {
                 imageFolder = "$imageFolder/yasen-shimo"
             ),
             header = ProtehHeader(
-                filePath = "./src/test/resources/argo.html",
                 baseUrl = baseUrl
             )
         )

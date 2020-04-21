@@ -20,7 +20,7 @@ class ProtehProducts(
     private var productId = startId
     private val toLatinTrans = Transliterator.getInstance("Russian-Latin/BGN")
 
-    fun createProduct(element: Element): Product {
+    private fun createProduct(element: Element): Product {
         val str = element.toString()
 
         val a = element.select("a").first()

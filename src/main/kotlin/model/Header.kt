@@ -1,5 +1,7 @@
 package model
 
-import files.FileSource
+import files.RemoteFile
 
-interface Header : FileSource
+interface Header {
+    fun getImages(filePath: String): List<RemoteFile>
+}

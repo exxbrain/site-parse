@@ -7,8 +7,8 @@ internal class ProtehHeaderTest {
 
     @Test
     fun getGalleryImages() {
-        val header = ProtehHeader("src/test/resources/argo.html", "https://proteh.ru/argo")
-        val actual = header.images
+        val header = ProtehHeader("https://proteh.ru/argo")
+        val actual = header.getImages("src/test/resources/argo.html")
 
         assertEquals(45, actual.size)
         assertEquals("https://proteh.ru/argo/img/int/argo%20(10).jpg", actual[0].url)

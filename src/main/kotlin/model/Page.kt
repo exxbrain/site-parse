@@ -44,7 +44,7 @@ class Page (
         }
         if (header != null) {
             runBlocking {
-                Files(header).download("$targetFolder/gallery")
+                Files(header.getImages(filePath)).download("$targetFolder/gallery")
             }
         }
 
