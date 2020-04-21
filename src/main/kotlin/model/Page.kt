@@ -1,22 +1,21 @@
-package proteh
+package model
 
 import files.Files
-import files.TextFile
 import kotlinx.coroutines.runBlocking
 import opencart.OCExcelWb
 import org.openqa.selenium.chrome.ChromeDriver
 import java.io.File
+import java.io.FileOutputStream
+import java.nio.charset.Charset
 
-class ProtehPage(
-    url: String,
+class Page (
+    private val url: String,
     private val filePath: String,
     private val targetFolder: String,
-    private val collection: ProtehCollection,
-    private val header: ProtehHeader? = null,
-    beforeDownload: ((driver: ChromeDriver) -> Unit)? = null
+    private val products: Products,
+    private val header: Header? = null,
+    private val beforeDownload: ((driver: ChromeDriver) -> Unit)? = null
 ) {
-
-    private val remotePage = RemotePage(url, beforeDownload)
 
     fun download() {
         val file = File(filePath)
@@ -27,7 +26,15 @@ class ProtehPage(
             throw Exception("AAA")
         }
         file.createNewFile()
-        remotePage.download(filePath)
+
+        val driver = ChromeDriver()
+        driver.get(url)
+        beforeDownload?.let { it(driver) }
+        val pageSource = driver.pageSource
+        FileOutputStream(File(filePath)).use {
+            it.write(pageSource.toByteArray(Charset.forName("WINDOWS-1251")))
+        }
+        driver.close()
     }
 
     fun save() {
@@ -36,15 +43,14 @@ class ProtehPage(
             folder.deleteRecursively()
         }
         if (header != null) {
-            TextFile(header).save("$targetFolder/header.txt")
             runBlocking {
                 Files(header).download("$targetFolder/gallery")
             }
         }
-        collection.filePath = filePath
-        OCExcelWb(collection).save("$targetFolder/products.xls")
+
+        OCExcelWb(products.getProducts(filePath)).save("$targetFolder/products.xls")
         runBlocking {
-            Files(collection).download("$targetFolder/images")
+            Files(products.getImages(filePath)).download("$targetFolder/images")
         }
     }
 }

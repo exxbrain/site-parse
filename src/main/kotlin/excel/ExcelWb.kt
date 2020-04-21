@@ -3,7 +3,9 @@ package excel
 import org.apache.poi.hssf.usermodel.HSSFRow
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.ss.usermodel.CellType
+import java.io.File
 import java.io.FileOutputStream
+import java.lang.Exception
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.*
@@ -18,6 +20,12 @@ class ExcelWb(private val data: LinkedHashMap<String, List<DataSource>>) {
         for (sheetData in data) {
             addSheet(sheetData.key, sheetData.value)
         }
+        val file = File(filePath)
+        file.deleteOnExit()
+        if (!file.parentFile.exists() && !file.parentFile.mkdirs()) {
+            throw Exception("Couldn't create ${file.parent}")
+        }
+        file.createNewFile()
         FileOutputStream(filePath).use {
             wb.write(it)
         }

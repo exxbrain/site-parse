@@ -1,5 +1,6 @@
 package proteh
 
+import model.Page
 import org.openqa.selenium.By
 
 class ArgoPages {
@@ -8,11 +9,11 @@ class ArgoPages {
         private val imageFolder = "./result/argo/korpusnaya_mebel/operativnaya_mebel/argo"
         private val baseUrl = "https://www.proteh.ru/argo"
 
-        val yasenShimo = ProtehPage(
+        val yasenShimo = Page(
             url = baseUrl,
             filePath = "./src/test/resources/argo.html",
             targetFolder = "$imageFolder/yasen-shimo",
-            collection = ProtehCollection(
+            products = ProtehProducts(
                 startId = 250,
                 categoryId = 90,
                 options = linkedMapOf("Цвет" to listOf(
@@ -44,11 +45,11 @@ class ArgoPages {
             )
         )
 
-        val garbo = ProtehPage(
+        val garbo = Page(
             url = baseUrl,
             filePath = "./src/test/resources/argo-garbo.html",
             targetFolder = "$imageFolder/yasen-shimo",
-            collection = ProtehCollection(
+            products = ProtehProducts(
                 250,
                 90,
                 imageFolder = "$imageFolder/garbo"
@@ -59,14 +60,14 @@ class ArgoPages {
             }
         )
 
-        val white = ProtehPage(
+        val white = Page(
             url = baseUrl,
             filePath = "./src/test/resources/argo-white.html",
-            targetFolder = "$imageFolder/yasen-shimo",
-            collection = ProtehCollection(
+            targetFolder = "$imageFolder/white",
+            products = ProtehProducts(
                 250,
                 90,
-                imageFolder = "$imageFolder/garbo"
+                imageFolder = "$imageFolder/white"
             ),
             beforeDownload = {
                 val element = it.findElements(By.cssSelector("#colors div"))[2]

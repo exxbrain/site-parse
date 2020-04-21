@@ -2,12 +2,9 @@ package opencart
 
 import excel.DataSource
 import excel.ExcelWb
-import model.Collection
 import model.Product
 
-class OCExcelWb(collection: Collection) {
-
-    private var products: List<Product> = collection.products
+class OCExcelWb(private val products: List<Product>) {
 
     private fun getData(): LinkedHashMap<String, List<DataSource>> {
         return linkedMapOf (

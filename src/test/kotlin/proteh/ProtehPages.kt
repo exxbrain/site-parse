@@ -18,7 +18,7 @@ internal class ProtehPages {
 
     @Test
     fun saveWhite() {
-        //ArgoPages.white.download()
+        // ArgoPages.white.download()
         ArgoPages.white.save()
     }
 }

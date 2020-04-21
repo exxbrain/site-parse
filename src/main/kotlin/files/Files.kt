@@ -6,11 +6,14 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import java.io.File
 
-class Files(private val fileSource: FileSource) : Downloadable {
+class Files(private val images: List<RemoteFile>) : Downloadable {
+    constructor(vararg image: RemoteFile) : this(image.asList())
+    constructor(fileSource: FileSource) : this(fileSource.images)
+
 
     override suspend fun download(folder: String) = coroutineScope {
         mkdir(folder)
-        val images = fileSource.images
+        val images = images
         images.size
         val batchSize = 20
         val chunks = Math.floor(images.size.toDouble() / batchSize).toInt()

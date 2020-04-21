@@ -1,66 +1,27 @@
 package proteh
 
 import com.ibm.icu.text.Transliterator
-import model.Collection
-import model.Product
 import files.RemoteFile
+import model.Product
+import model.Products
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import java.io.File
 import java.math.BigDecimal
 
-
-class ProtehCollection(
-    private val startId: Long,
-    private val categoryId: Long,
+class ProtehProducts(
+    startId: Long = 1,
+    private val categoryId: Long = 1,
     private val options: LinkedHashMap<String, List<String>> = linkedMapOf(),
     private val additionalImageFolders: List<String> = listOf(),
-    private val imageFolder: String,
-    var filePath: String? = null
+    private val imageFolder: String
+) : Products() {
 
-) : Collection {
-
+    private var productId = startId
     private val toLatinTrans = Transliterator.getInstance("Russian-Latin/BGN")
 
-    override val products: List<Product> get() {
-        assert(filePath != null)
-        val doc = Jsoup.parse(File(filePath), "WINDOWS-1251")
-        val products = doc
-            .select(".muuri-item")
-            .sortedBy { it.attr("data-art") }
-            .mapIndexed{ index, element ->  createProduct(index, element) }
-
-        products
-            .groupBy { it.seo }
-            .filter { it.value.size > 1 }
-            .forEach { entry ->
-                entry.value.forEach {
-                    it.seo = "${it.seo}-${it.productId}"
-                }
-            }
-
-        products
-            .groupBy { it.imageName }
-            .filter { it.value.size > 1 }
-            .forEach { entry ->
-                entry.value.forEach {
-                    val imageName = "${it.imageName}-${it.productId}"
-                    it.imageName = imageName
-                    it.images[0].fileNameWithoutExtension = imageName
-                }
-            }
-        return products
-    }
-
-    override val images: List<RemoteFile>
-        get() {
-            return products.flatMap { it.images }
-        }
-
-
-    private fun createProduct(index: Int, element: Element): Product {
+    fun createProduct(element: Element): Product {
         val str = element.toString()
-        val productId = index + startId
 
         val a = element.select("a").first()
         val dataCaption = a.attr("data-caption")
@@ -96,7 +57,7 @@ class ProtehCollection(
             .replace(Regex("[^a-z0-9-]"), "_")
 
         return Product(
-            productId = productId,
+            productId = productId++,
             name = name,
             images = if (imageUrl == "/img/noImage.png") listOf() else listOf(image),
             manufacturer = "Программа техно",
@@ -115,5 +76,13 @@ class ProtehCollection(
             additionalImages = additionalImageFolders.map { "$it/${image.fileName}" },
             imageFolder = imageFolder
         )
+    }
+
+    override fun getProductsInternal(filePath: String): List<Product> {
+        val document = Jsoup.parse(File(filePath), "WINDOWS-1251")
+        return document
+            .select(".muuri-item")
+            .sortedBy { it.attr("data-art") }
+            .map{ createProduct(it) }
     }
 }
