@@ -1,6 +1,6 @@
 package model
 
-interface Header {
-    val galleryImages: List<RemoteFile>
-    val text: String
-}
+import files.FileSource
+import files.TextSource
+
+interface Header : FileSource, TextSource

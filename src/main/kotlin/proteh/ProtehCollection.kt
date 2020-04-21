@@ -3,31 +3,60 @@ package proteh
 import com.ibm.icu.text.Transliterator
 import model.Collection
 import model.Product
-import model.RemoteFile
-import org.jsoup.nodes.Document
+import files.RemoteFile
+import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
+import java.io.File
 import java.math.BigDecimal
 
 
-class ProtehCollection(private val manufacturer: String, private val startId: Long, private val categoryId: Long, private val doc: Document) : Collection {
+class ProtehCollection(
+    private val startId: Long,
+    private val categoryId: Long,
+    private val options: LinkedHashMap<String, List<String>> = linkedMapOf(),
+    private val additionalImageFolders: List<String> = listOf(),
+    private val imageFolder: String,
+    var filePath: String? = null
+
+) : Collection {
 
     private val toLatinTrans = Transliterator.getInstance("Russian-Latin/BGN")
-    override val products: List<Product>
-        get() {
-            val products = doc
-                .select(".muuri-item")
-                .mapIndexed{ index, element ->  createProduct(index, element) }
 
-            products
-                .groupBy { it.seo }
-                .filter { it.value.size > 1 }
-                .forEach { entry ->
-                    entry.value.forEach {
-                        it.seo = "${it.seo}-${it.productId}"
-                    }
+    override val products: List<Product> get() {
+        assert(filePath != null)
+        val doc = Jsoup.parse(File(filePath), "WINDOWS-1251")
+        val products = doc
+            .select(".muuri-item")
+            .sortedBy { it.attr("data-art") }
+            .mapIndexed{ index, element ->  createProduct(index, element) }
+
+        products
+            .groupBy { it.seo }
+            .filter { it.value.size > 1 }
+            .forEach { entry ->
+                entry.value.forEach {
+                    it.seo = "${it.seo}-${it.productId}"
                 }
-            return products
+            }
+
+        products
+            .groupBy { it.imageName }
+            .filter { it.value.size > 1 }
+            .forEach { entry ->
+                entry.value.forEach {
+                    val imageName = "${it.imageName}-${it.productId}"
+                    it.imageName = imageName
+                    it.images[0].fileNameWithoutExtension = imageName
+                }
+            }
+        return products
+    }
+
+    override val images: List<RemoteFile>
+        get() {
+            return products.flatMap { it.images }
         }
+
 
     private fun createProduct(index: Int, element: Element): Product {
         val str = element.toString()
@@ -41,8 +70,8 @@ class ProtehCollection(private val manufacturer: String, private val startId: Lo
         val articul = element.attr("data-art")
 
         var imageName = toLatinTrans.transliterate(articul)
-        imageName = "${imageName}_$productId".toLowerCase().replace(Regex("[^a-z0-9-]"), "_")
-        val images = if (imageUrl == "/img/noImage.png") listOf() else listOf(RemoteFile(imageUrl, imageName))
+        imageName = imageName.toLowerCase().replace(Regex("[^a-z0-9-]"), "_")
+        val image = RemoteFile(imageUrl, imageName)
 
         val sizes = Regex("(\\d+)x(\\d+)x(\\d+)").find(str)?.groupValues
         var length = 0.0
@@ -69,10 +98,11 @@ class ProtehCollection(private val manufacturer: String, private val startId: Lo
         return Product(
             productId = productId,
             name = name,
-            images = images,
-            manufacturer = manufacturer,
+            images = if (imageUrl == "/img/noImage.png") listOf() else listOf(image),
+            manufacturer = "Программа техно",
             model = articul,
             description = "${element.attr("data-name")}. $description".trim(),
+            imageName = imageName,
             price = priceBigDecimal,
             length = length,
             width = width,
@@ -80,7 +110,10 @@ class ProtehCollection(private val manufacturer: String, private val startId: Lo
             category = element.attr("data-cat"),
             categoryId = categoryId,
             sku = element.attr("data-id"),
-            seo = seo
+            seo = seo,
+            options = options,
+            additionalImages = additionalImageFolders.map { "$it/${image.fileName}" },
+            imageFolder = imageFolder
         )
     }
 }

@@ -1,4 +1,4 @@
-package model
+package files
 
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -14,12 +14,11 @@ import java.util.*
 
 data class RemoteFile (
     val url: String,
-    private var fileNameWithoutExtension: String = "${UUID.randomUUID()}"
+    var fileNameWithoutExtension: String = "${UUID.randomUUID()}"
 ): Downloadable {
-    val fileName = "$fileNameWithoutExtension.${url.extension}"
+    val fileName get() = "$fileNameWithoutExtension.${url.extension}"
 
-
-    override suspend fun download(folder: String) = suspendCancellableCoroutine { continuation: CancellableContinuation<Response> ->
+    override suspend fun download(folder: String) = suspendCancellableCoroutine { continuation: CancellableContinuation<Unit> ->
         val file = File("${folder}/${fileName}")
         file.createNewFile()
         val stream = FileOutputStream(file)
@@ -39,7 +38,7 @@ data class RemoteFile (
                     @Throws(java.lang.Exception::class)
                     override fun onCompleted(response: Response): FileOutputStream? {
                         stream.close()
-                        continuation.resumeWith(Result.success(response))
+                        continuation.resumeWith(Result.success(Unit))
                         return stream
                     }
                 })

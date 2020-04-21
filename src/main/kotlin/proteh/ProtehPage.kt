@@ -1,30 +1,50 @@
 package proteh
 
+import files.Files
+import files.TextFile
 import kotlinx.coroutines.runBlocking
-import opencart.OpenCartCollection
-import opencart.OpenCartFolder
-import org.jsoup.Jsoup
+import opencart.OCExcelWb
+import org.openqa.selenium.chrome.ChromeDriver
 import java.io.File
 
-class ProtehPage(private val filePath: String) {
-    fun save() {
-        val doc = Jsoup.parse(File(filePath), "WINDOWS-1251")
+class ProtehPage(
+    url: String,
+    private val filePath: String,
+    private val targetFolder: String,
+    private val collection: ProtehCollection,
+    private val header: ProtehHeader? = null,
+    beforeDownload: ((driver: ChromeDriver) -> Unit)? = null
+) {
 
-        val folder = OpenCartFolder("./result/argo")
-        folder.clear()
+    private val remotePage = RemotePage(url, beforeDownload)
 
-        val header = ProtehHeader("https://www.proteh.ru/argo", doc)
-        folder.save(header.text, "header.txt")
-        runBlocking {
-            folder.save(header.galleryImages, "korpusnaya_mebel/operativnaya_mebel/argo/gallery")
+    fun download() {
+        val file = File(filePath)
+        if (file.exists()) {
+            file.delete()
         }
+        if (!file.parentFile.exists() && !file.parentFile.mkdirs()) {
+            throw Exception("AAA")
+        }
+        file.createNewFile()
+        remotePage.download(filePath)
+    }
 
-        val collection = OpenCartCollection(ProtehCollection("Программа техно", 250, 90, doc))
-
-        folder.save(collection.getData("korpusnaya_mebel/operativnaya_mebel/argo/yasen-shimo"), "products.xls")
-
+    fun save() {
+        val folder = File(targetFolder)
+        if (folder.exists()) {
+            folder.deleteRecursively()
+        }
+        if (header != null) {
+            TextFile(header).save("$targetFolder/header.txt")
+            runBlocking {
+                Files(header).download("$targetFolder/gallery")
+            }
+        }
+        collection.filePath = filePath
+        OCExcelWb(collection).save("$targetFolder/products.xls")
         runBlocking {
-            folder.save(collection.getImages(), "korpusnaya_mebel/operativnaya_mebel/argo/yasen-shimo")
+            Files(collection).download("$targetFolder/images")
         }
     }
 }

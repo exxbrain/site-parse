@@ -1,5 +1,7 @@
 package model
 
-interface Collection {
+import files.FileSource
+
+interface Collection : FileSource {
     val products: List<Product>
 }

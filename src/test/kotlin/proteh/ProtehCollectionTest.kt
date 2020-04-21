@@ -1,6 +1,6 @@
 package proteh
 
-import model.RemoteFile
+import files.RemoteFile
 import model.Product
 import org.jsoup.Jsoup
 import org.junit.jupiter.api.Test
@@ -23,7 +23,7 @@ internal class ProtehCollectionTest {
     fun getProductsAllProducts(data: TestData) {
         val file = File("src/test/resources/argo.html")
         val doc = Jsoup.parse(file, "WINDOWS-1251")
-        val products = ProtehCollection("Программа техно", 1, 50, doc)
+        val products = ProtehCollection("Программа техно", 1, 50, doc, imageFolder = "$imageFolder/yasen-shimo")
         val actual = products.products[data.input]
 
         assertEquals(data.expected.seo, actual.seo)
@@ -72,7 +72,12 @@ internal class ProtehCollectionTest {
                     width = 0.4,
                     height = 76.0,
                     price = 1783.toBigDecimal(),
-                    images = listOf(RemoteFile("https://proteh.ru/products/img/00000007831.png", "a-302_s_f_1")),
+                    images = listOf(
+                        RemoteFile(
+                            "https://proteh.ru/products/img/00000007831.png",
+                            "a-302_s_f_1"
+                        )
+                    ),
                     sku = "00000007831",
                     seo = "komplekt_steklyannykh_dverey-a-302_s_f-1"
                 )
@@ -90,7 +95,12 @@ internal class ProtehCollectionTest {
                     width = 0.4,
                     height = 76.0,
                     price = 2780.toBigDecimal(),
-                    images = listOf(RemoteFile("https://proteh.ru/products/img/00000007832.png", "a-302_s_f_2")),
+                    images = listOf(
+                        RemoteFile(
+                            "https://proteh.ru/products/img/00000007832.png",
+                            "a-302_s_f_2"
+                        )
+                    ),
                     sku = "00000007832",
                     seo = "komplekt_steklyannykh_dverey-a-302_s_f-2"
                 )
@@ -108,7 +118,12 @@ internal class ProtehCollectionTest {
                     width = 73.0,
                     height = 76.0,
                     price = 2809.toBigDecimal(),
-                    images = listOf(RemoteFile("https://proteh.ru/products/img/F0000003659.png", "a-002_11")),
+                    images = listOf(
+                        RemoteFile(
+                            "https://proteh.ru/products/img/F0000003659.png",
+                            "a-002_11"
+                        )
+                    ),
                     sku = "F0000003659",
                     seo = "stol_rabochiy-a-002"
                 )
@@ -126,7 +141,12 @@ internal class ProtehCollectionTest {
                     width = 73.0,
                     height = 76.0,
                     price = 7717.toBigDecimal(),
-                    images = listOf(RemoteFile("https://proteh.ru/products/img/F0000009577.png", "am-002_101")),
+                    images = listOf(
+                        RemoteFile(
+                            "https://proteh.ru/products/img/F0000009577.png",
+                            "am-002_101"
+                        )
+                    ),
                     sku = "F0000009577",
                     seo = "stol_na_metallokarkase-am-002"
                 )
@@ -162,7 +182,12 @@ internal class ProtehCollectionTest {
                     width = 123.6,
                     height = 76.0,
                     price = 0.toBigDecimal(),
-                    images = listOf(RemoteFile("https://proteh.ru/products/img/F0000011792.png", "amb-005_60-6_144")),
+                    images = listOf(
+                        RemoteFile(
+                            "https://proteh.ru/products/img/F0000011792.png",
+                            "amb-005_60-6_144"
+                        )
+                    ),
                     sku = "F0000011792",
                     seo = "bench_dvoynoy_na_6_rabochikh_mest-amb-005_60-6"
                 )

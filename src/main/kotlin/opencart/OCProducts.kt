@@ -1,13 +1,13 @@
 package opencart
 
-import excel.WithData
+import excel.DataSource
 import model.Product
 import java.util.*
 
-internal data class OpenCartProduct(private val product: Product, private val imgFolder: String) :
-    WithData {
-    override fun getData(): LinkedHashMap<String, Any> {
-        return linkedMapOf(
+internal data class OCProducts(private val product: Product) :
+    DataSource {
+    override val data: List<LinkedHashMap<String, Any>> get() {
+        return listOf(linkedMapOf(
             "product_id" to product.productId,
             "name(ru-ru)" to "${product.name} ${product.model}",
             "categories" to product.categoryId,
@@ -21,7 +21,7 @@ internal data class OpenCartProduct(private val product: Product, private val im
             "quantity" to 2,
             "model" to product.model,
             "manufacturer" to product.manufacturer,
-            "image_name" to if (product.images.any()) "catalog/$imgFolder/${product.images[0].fileName}" else "",
+            "image_name" to if (product.images.any()) "catalog/${product.imageFolder}/${product.images[0].fileName}" else "",
             "shipping" to true,
             "price" to 0,
             "points" to 0,
@@ -48,6 +48,6 @@ internal data class OpenCartProduct(private val product: Product, private val im
             "sort_order" to 1,
             "subtract" to true,
             "minimum" to 1
-        )
+        ))
     }
 }

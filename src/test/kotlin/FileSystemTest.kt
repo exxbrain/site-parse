@@ -1,8 +1,8 @@
 import io.mockk.impl.annotations.MockK
 import model.Collection
-import model.RemoteFile
+import files.RemoteFile
 import opencart.OpenCartFolder
-import excel.WithData
+import excel.DataSource
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -37,13 +37,13 @@ internal class FileSystemTest {
     fun saveData() {
         val sut = OpenCartFolder("./test/argo")
         val data = linkedMapOf(
-            "Products" to listOf<WithData>(
-                object: WithData {
-                    override fun getData(): LinkedHashMap<String, Any> {
-                        return linkedMapOf(
+            "Products" to listOf<DataSource>(
+                object: DataSource {
+                    override fun getData(): List<LinkedHashMap<String, Any>> {
+                        return listOf(linkedMapOf(
                             "product_id" to 23455,
                             "number" to 1234
-                        )
+                        ))
                     }
                 }
             )
