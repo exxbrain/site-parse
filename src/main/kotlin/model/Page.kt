@@ -4,12 +4,14 @@ import files.Files
 import kotlinx.coroutines.runBlocking
 import opencart.OCExcelWb
 import org.openqa.selenium.chrome.ChromeDriver
+import org.openqa.selenium.chrome.ChromeOptions
 import java.io.File
 import java.io.FileOutputStream
 import java.nio.charset.Charset
 
 class Page (
     private val url: String,
+    private val code: String,
     private val filePath: String,
     private val targetFolder: String,
     private val products: Products,
@@ -27,7 +29,9 @@ class Page (
         }
         file.createNewFile()
 
-        val driver = ChromeDriver()
+        val options = ChromeOptions()
+        options.addArguments("--whitelisted-ips=''", "--no-sandbox", "--verbose")
+        val driver = ChromeDriver(options)
         driver.get(url)
         beforeDownload?.let { it(driver) }
         val pageSource = driver.pageSource
@@ -37,12 +41,12 @@ class Page (
         driver.close()
     }
 
-    fun save() {
+    fun save(ignoreImages: Boolean = false) {
         val folder = File(targetFolder)
-        if (folder.exists()) {
+        if (folder.exists() && !ignoreImages) {
             folder.deleteRecursively()
         }
-        if (header != null) {
+        if (header != null && !ignoreImages) {
             runBlocking {
                 Files(header.getImages(filePath)).download("$targetFolder/gallery")
             }
@@ -50,7 +54,9 @@ class Page (
 
         OCExcelWb(products.getProducts(filePath)).save("$targetFolder/products.xls")
         runBlocking {
-            Files(products.getImages(filePath)).download("$targetFolder/images")
+            if(!ignoreImages) {
+                Files(products.getImages(filePath)).download("$targetFolder/$code")
+            }
         }
     }
 }

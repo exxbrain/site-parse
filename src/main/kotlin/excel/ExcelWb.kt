@@ -21,7 +21,7 @@ class ExcelWb(private val data: LinkedHashMap<String, List<DataSource>>) {
             addSheet(sheetData.key, sheetData.value)
         }
         val file = File(filePath)
-        file.deleteOnExit()
+        file.delete()
         if (!file.parentFile.exists() && !file.parentFile.mkdirs()) {
             throw Exception("Couldn't create ${file.parent}")
         }

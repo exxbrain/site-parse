@@ -1,7 +1,6 @@
 package model
 
 import files.RemoteFile
-import java.math.BigDecimal
 
 class Product(
     val productId: Long,
@@ -12,7 +11,7 @@ class Product(
     var imageName: String = "",
     val category: String = "",
     val categoryId: Long,
-    val price: BigDecimal = 0.toBigDecimal(),
+    val price: Price = Price.ZERO,
     val sku: String = "",
     val weight: Double = .0,
     val length: Double = .0,
@@ -23,4 +22,6 @@ class Product(
     val additionalImages: List<String> = listOf(),
     val options: LinkedHashMap<String, List<String>> = linkedMapOf(),
     val imageFolder: String
-)
+) {
+    var defaultOptionValues: Map<String, String> = options.map { Pair(it.key, it.value[0]) }.toMap()
+}

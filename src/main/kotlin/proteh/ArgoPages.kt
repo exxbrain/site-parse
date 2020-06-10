@@ -6,16 +6,17 @@ import org.openqa.selenium.By
 class ArgoPages {
     companion object {
 
-        private val imageFolder = "./result/argo/korpusnaya_mebel/operativnaya_mebel/argo"
+        private val imageFolder = "korpusnaya_mebel/operativnaya_mebel/argo"
         private val baseUrl = "https://www.proteh.ru/argo"
 
         val yasenShimo = Page(
             url = baseUrl,
+            code = "yasen-shimo",
             filePath = "./src/test/resources/argo.html",
-            targetFolder = "$imageFolder/yasen-shimo",
+            targetFolder = "./result/argo/yasen-shimo",
             products = ProtehProducts(
-                startId = 250,
-                categoryId = 90,
+                startId = 450,
+                categoryId = 67,
                 options = linkedMapOf("Цвет" to listOf(
                     "Ясень шимо",
                     "Гарбо",
@@ -28,50 +29,71 @@ class ArgoPages {
                     "Синий"
                 )),
                 additionalImageFolders = listOf(
-                    "$imageFolder/garbo",
-                    "$imageFolder/belyi",
-                    "$imageFolder/grusha_arozo",
-                    "$imageFolder/seryi",
-                    "$imageFolder/buk",
-                    "$imageFolder/dub_venge",
-                    "$imageFolder/oreh",
-                    "$imageFolder/siniy"
+                    "catalog/$imageFolder/garbo",
+                    "catalog/$imageFolder/belyi",
+                    "catalog/$imageFolder/grusha_arozo",
+                    "catalog/$imageFolder/seryi",
+                    "catalog/$imageFolder/buk",
+                    "catalog/$imageFolder/dub_venge",
+                    "catalog/$imageFolder/oreh",
+                    "catalog/$imageFolder/siniy"
                 ),
-                imageFolder = "$imageFolder/yasen-shimo"
+                imageFolder = "catalog/$imageFolder/yasen-shimo"
             ),
             header = ProtehHeader(
                 baseUrl = baseUrl
             )
         )
 
-        val garbo = Page(
-            url = baseUrl,
-            filePath = "./src/test/resources/argo-garbo.html",
-            targetFolder = "$imageFolder/yasen-shimo",
-            products = ProtehProducts(
-                250,
-                90,
-                imageFolder = "$imageFolder/garbo"
-            ),
-            beforeDownload = {
-                val element = it.findElements(By.cssSelector("#colors div"))[1]
-                element.click()
-            }
-        )
+        val garbo = page("garbo", 1)
+        val white = page("belyi", 2)
+        val grusha_arozo = page("grusha_arozo", 3)
+        val seryi = page("seryi", 4)
+        val buk = page("buk", 5)
+        val dub_venge = page("dub_venge", 6)
+        val oreh = page("oreh", 7)
+        val siniy = page("siniy", 8)
 
-        val white = Page(
-            url = baseUrl,
-            filePath = "./src/test/resources/argo-white.html",
-            targetFolder = "$imageFolder/white",
-            products = ProtehProducts(
-                250,
-                90,
-                imageFolder = "$imageFolder/white"
-            ),
-            beforeDownload = {
-                val element = it.findElements(By.cssSelector("#colors div"))[2]
-                element.click()
-            }
-        )
+        private fun page(code: String, colorNum: Int): Page {
+            return Page(
+                url = baseUrl,
+                code = code,
+                filePath = "./src/test/resources/argo-$code.html",
+                targetFolder = "./result/argo/$imageFolder/$code",
+                products = ProtehProducts(
+                    250,
+                    67,
+                    imageFolder = "catalog/$imageFolder/$code"
+                ),
+                beforeDownload = {
+                    val element = it.findElements(By.cssSelector("#colors div"))[colorNum]
+                    element.click()
+                }
+            )
+        }
+
+        fun downloadAll() {
+            yasenShimo.download()
+            garbo.download()
+            grusha_arozo.download()
+            buk.download()
+            white.download()
+            dub_venge.download()
+            oreh.download()
+            seryi.download()
+            siniy.download()
+        }
+
+        fun saveAll() {
+            yasenShimo.save()
+            garbo.save()
+            grusha_arozo.save()
+            buk.save()
+            white.save()
+            dub_venge.save()
+            oreh.save()
+            seryi.save()
+            siniy.save()
+        }
     }
 }

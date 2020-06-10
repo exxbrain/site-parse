@@ -29,6 +29,7 @@ abstract class Products {
             }
 
         products
+            .filter { it.images.isNotEmpty() }
             .groupBy { it.imageName }
             .filter { it.value.size > 1 }
             .forEach { entry ->

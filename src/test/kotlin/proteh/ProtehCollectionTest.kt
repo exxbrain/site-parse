@@ -1,6 +1,7 @@
 package proteh
 
 import files.RemoteFile
+import model.Price
 import model.Product
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -79,7 +80,7 @@ internal class ProtehCollectionTest {
                     length = 90.0,
                     width = 73.0,
                     height = 76.0,
-                    price = 2746.toBigDecimal(),
+                    price = Price(2746),
                     images = listOf(
                         RemoteFile(
                             "https://proteh.ru/products/img/F0000003880.png",

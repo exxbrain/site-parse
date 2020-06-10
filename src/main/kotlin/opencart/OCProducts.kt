@@ -2,6 +2,8 @@ package opencart
 
 import excel.DataSource
 import model.Product
+import java.math.MathContext
+import java.math.RoundingMode
 import java.util.*
 
 internal data class OCProducts(private val product: Product) :
@@ -11,7 +13,7 @@ internal data class OCProducts(private val product: Product) :
             "product_id" to product.productId,
             "name(ru-ru)" to "${product.name} ${product.model}",
             "categories" to product.categoryId,
-            "sku" to product.sku,
+            "sku" to "",
             "upc" to "",
             "ean" to "",
             "jan" to "",
@@ -21,9 +23,9 @@ internal data class OCProducts(private val product: Product) :
             "quantity" to 2,
             "model" to product.model,
             "manufacturer" to product.manufacturer,
-            "image_name" to if (product.images.any()) "catalog/${product.imageFolder}/${product.images[0].fileName}" else "",
+            "image_name" to if (product.images.any()) "${product.imageFolder}/${product.images[0].fileName}" else "",
             "shipping" to true,
-            "price" to 0,
+            "price" to product.price.calculate(1.032),
             "points" to 0,
             "date_added" to Date(),
             "date_modified" to Date(),

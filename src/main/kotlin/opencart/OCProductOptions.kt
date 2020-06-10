@@ -10,7 +10,8 @@ class OCProductOptions(private val product: Product) : DataSource {
             linkedMapOf(
                 "product_id" to product.productId,
                 "option" to it,
-                "required" to "false"
+                "default_option_value" to product.defaultOptionValues.getOrDefault(it, ""),
+                "required" to "true"
             )
         }
     }

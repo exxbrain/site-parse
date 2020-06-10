@@ -2,12 +2,12 @@ package proteh
 
 import com.ibm.icu.text.Transliterator
 import files.RemoteFile
+import model.Price
 import model.Product
 import model.Products
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import java.io.File
-import java.math.BigDecimal
 
 class ProtehProducts(
     startId: Long = 1,
@@ -45,9 +45,9 @@ class ProtehProducts(
         }
 
         val price = Regex("(\\d+) руб\\.").find(str)?.groupValues
-        var priceBigDecimal = BigDecimal.ZERO
+        var priceBigDecimal = Price.ZERO
         if (price != null) {
-            priceBigDecimal = price[1].toBigDecimal()
+            priceBigDecimal = Price(price[1])
         }
 
         val name = element.attr("data-shortname").trim()
