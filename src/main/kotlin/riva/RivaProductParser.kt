@@ -1,0 +1,4 @@
+package riva
+
+class RivaProductParser {
+}
