@@ -5,7 +5,6 @@ import excel.ExcelWb
 import model.Product
 
 class OCExcelWb(private val products: List<Product>) {
-    constructor(vararg product: Product) : this(product.toList())
 
     private fun getData(): LinkedHashMap<String, List<DataSource>> {
         return linkedMapOf (
