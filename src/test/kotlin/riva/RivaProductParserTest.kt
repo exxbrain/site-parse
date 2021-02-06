@@ -1,7 +1,6 @@
 package riva
 
 import com.appmattus.kotlinfixture.kotlinFixture
-import logger
 import model.Image
 import model.ProductCollection
 import org.jsoup.Jsoup
