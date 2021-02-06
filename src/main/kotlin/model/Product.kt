@@ -1,16 +1,11 @@
 package model
 
-import files.RemoteFile
-
-class Product(
+data class Product internal constructor(
     val productId: Long,
     val name: String = "",
     val model: String = "",
-    val manufacturer: String = "",
-    val images: List<RemoteFile> = listOf(),
-    var imageName: String = "",
+    val image: Image,
     val category: String = "",
-    val categoryId: Long,
     val price: Price = Price.ZERO,
     val sku: String = "",
     val weight: Double = .0,
@@ -18,10 +13,15 @@ class Product(
     val width: Double = .0,
     val height: Double = .0,
     val description: String = "",
-    var seo: String,
-    val additionalImages: List<String> = listOf(),
-    val options: LinkedHashMap<String, List<String>> = linkedMapOf(),
-    val imageFolder: String
+    val seo: String,
+    val collection: ProductCollection
 ) {
-    var defaultOptionValues: Map<String, String> = options.map { Pair(it.key, it.value[0]) }.toMap()
+    val mainImage = if (collection.imageFolders.isNotEmpty()) "${collection.imageFolders[0]}/${image.fileName}" else null
+    val additionalImages = if (collection.imageFolders.size > 1)
+        collection.imageFolders.subList(1, collection.imageFolders.size).map { "$it/${image.fileName}" }
+        else emptyList()
+    val options = linkedMapOf("Цвет" to collection.colors.map { it.name })
+    val defaultOptionValues = options.map { Pair(it.key, it.value[0]) }.toMap()
+    val categoryId = collection.categoryId
+    val manufacturer = collection.manufacturer.name
 }

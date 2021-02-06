@@ -9,29 +9,68 @@ import SPSimpleRemoteFiles
 import kotlinx.coroutines.runBlocking
 import opencart.OCExcelWb
 
-class ProductCollection(val url: String,
-                        val uniqName: String,
-                        val colors: List<Color>,
-                        val categoryCode: String,
-                        val categoryId: Long) {
+class ProductCollection (
+    val startId: Long,
+    val colors: List<Color>,
+    val categoryCode: String,
+    val categoryId: Long,
+    val manufacturer: Manufacturer,
+    val code: String
+) {
 
-    fun download() {
+    val imageFolders = colors.map { "/catalog/$categoryCode/$code/${it.code}" }
+
+    private var currentProductId = startId
+    private var seoIndex = 1
+
+    fun product(
+        image: Image,
+        seo: String,
+        name: String,
+        model: String,
+        price: Price = Price.ZERO,
+        sku: String = "",
+        description: String,
+        size: Size = Size(),
+        weight: Double = 0.0,
+        category: String
+    ) : Product {
+
+        return Product(
+            productId = currentProductId++,
+            collection = this,
+            image = image,
+            seo = seo + seoIndex++,
+            width = size.width,
+            height = size.height,
+            length = size.length,
+            weight = weight,
+            name = name,
+            model = model,
+            price = price,
+            sku = sku,
+            description = description,
+            category = category
+        )
+    }
+
+    fun download(url: String, uniqName: String) {
         val page = SPCachedPage(SPSimplePage(url))
 
         colors.forEach {
             val doc = page
-                .onLoad { interactor: SPPageInteractor -> onLoad(interactor, it.index) }
-                .save("./src/test/resources/${uniqName}/${it.code}.html")
+                .onLoad { interactor: SPPageInteractor -> manufacturer.onLoad?.invoke(interactor, it.index) }
+                .save("./result/${uniqName}/${it.code}.html")
 
-            val products = parser.parse(doc, this)
+            val products = manufacturer.parser.parse(doc, this)
             val remoteFiles = SPSimpleRemoteFiles(products.map { product -> SPRemoteFile(product.image.url, product.image.fileName) })
 
             runBlocking {
-                SPCachedRemoteFiles(remoteFiles).download("./src/test/resources/${uniqName}/${it.code}")
+                SPCachedRemoteFiles(remoteFiles).download("./result/${uniqName}/${it.code}")
             }
 
             if (colors.indexOf(it) == 0) {
-                OCExcelWb(products).save("./src/test/resources/${uniqName}/${uniqName}.xls")
+                OCExcelWb(products).save("./result/${uniqName}.xls")
             }
         }
     }
