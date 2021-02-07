@@ -54,13 +54,11 @@ class ProductCollection (
     }
 
     private fun calculateSeo(seo: String): String {
-        var res = seo
-        if (!addedSeo.contains(res)) {
-            addedSeo.add(res)
-            return res
+        if (addedSeo.contains(seo)) {
+            return calculateSeo("$seo-1")
         }
-        res = "$seo-1"
-        return calculateSeo(res)
+        addedSeo.add(seo)
+        return seo
     }
 
     fun download(url: String, uniqName: String) {
