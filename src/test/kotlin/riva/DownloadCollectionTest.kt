@@ -1,6 +1,6 @@
 package riva
 
-import model.Colors
+import model.Subcategories
 import model.Manufacturer
 import org.junit.jupiter.api.Test
 
@@ -9,7 +9,7 @@ internal class DownloadCollectionTest {
     @Test
     fun getProductsAllProducts() {
         Manufacturer("Riva")
-            .onLoad { interactor, index ->
+            .selectSubcategory { interactor, index ->
                 interactor.click(".variants__label", index)
                 interactor.click("#custom_tp")
                 try {
@@ -23,7 +23,7 @@ internal class DownloadCollectionTest {
             .download(
                 startId = 1500,
                 categoryId = 98,
-                colors = Colors.colors("Венге цаво", "Бук артиан", "Орех гварнери"),
+                subcategories = Subcategories.subcategories("Венге цаво", "Бук артиан", "Орех гварнери"),
                 categoryCode = "korpusnaya_mebel/operativnaya_mebel",
                 uniqName = "riva/nova_s",
                 url = "https://riva.ru/catalog/nova_s/"
@@ -31,7 +31,7 @@ internal class DownloadCollectionTest {
             .download(
                 startId = 1700,
                 categoryId = 99,
-                colors = Colors.colors("Клен", "Венге цаво", "Белый", "Груша ароза", "Клен металлик", "Орех гварнери", "Серый", "Венге металлик"),
+                subcategories = Subcategories.subcategories("Клен", "Венге цаво", "Белый", "Груша ароза", "Клен металлик", "Орех гварнери", "Серый", "Венге металлик"),
                 categoryCode = "korpusnaya_mebel/operativnaya_mebel",
                 uniqName = "riva/riva",
                 url = "https://riva.ru/catalog/riva/"
@@ -39,7 +39,7 @@ internal class DownloadCollectionTest {
             .download(
                 startId = 2000,
                 categoryId = 100,
-                colors = Colors.colors(
+                subcategories = Subcategories.subcategories(
                     "Акация-Антрацит",
                     "Акация-Белый",
                     "Акация-Мокко",
@@ -73,7 +73,7 @@ internal class DownloadCollectionTest {
             .download(
                 startId = 2300,
                 categoryId = 101,
-                colors = Colors.colors(
+                subcategories = Subcategories.subcategories(
                     "Дуб табак",
                     "Венге цаво",
                     "Клен",
@@ -85,7 +85,7 @@ internal class DownloadCollectionTest {
             .download(
                 startId = 2400,
                 categoryId = 102,
-                colors = Colors.colors(
+                subcategories = Subcategories.subcategories(
                     "Акация лорка",
                     "Вяз благородный",
                     "Суар Темный",
@@ -98,7 +98,7 @@ internal class DownloadCollectionTest {
             .download(
                 startId = 2800,
                 categoryId = 104,
-                colors = Colors.colors(
+                subcategories = Subcategories.subcategories(
                     "Серый",
                     "Венге металлик",
                     "Клен металлик",
@@ -107,5 +107,9 @@ internal class DownloadCollectionTest {
                 uniqName = "riva/reseptions-riva",
                 url = "https://riva.ru/catalog/riva1/"
             )
+    }
+
+    fun getImages() {
+
     }
 }

@@ -15,7 +15,7 @@ class Manufacturer(val name: String) {
     lateinit var parser: Parser
         private set
 
-    fun onLoad(onLoad: (interactor: SPPageInteractor, colorIndex: Int) -> Unit): Manufacturer {
+    fun selectSubcategory(onLoad: (interactor: SPPageInteractor, colorIndex: Int) -> Unit): Manufacturer {
         this.onLoad = onLoad
         return this
     }
@@ -29,14 +29,14 @@ class Manufacturer(val name: String) {
         startId: Long,
         url: String,
         uniqName: String,
-        colors: List<Color>,
+        subcategories: List<Subcategory>,
         categoryCode: String,
         categoryId: Long) : Manufacturer {
 
         ProductCollection(
             startId = startId,
             manufacturer = this,
-            colors = colors,
+            subcategories = subcategories,
             code = uniqName,
             categoryCode = categoryCode,
             categoryId = categoryId

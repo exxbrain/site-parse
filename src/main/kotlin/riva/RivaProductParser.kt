@@ -28,7 +28,7 @@ class RivaProductParser : Parser {
             seo = "${name}-${articul}".urlize(),
             size = size,
             description = name,
-            category = category
+            subcategory = category
         )
     }
 

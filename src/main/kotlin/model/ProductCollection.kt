@@ -11,14 +11,14 @@ import opencart.OCExcelWb
 
 class ProductCollection (
     val startId: Long,
-    val colors: List<Color>,
+    val subcategories: List<Subcategory>,
     val categoryCode: String,
     val categoryId: Long,
     val manufacturer: Manufacturer,
     val code: String
 ) {
 
-    val imageFolders = colors.map { "/catalog/$categoryCode/$code/${it.code}" }
+    val imageFolders = subcategories.map { "/catalog/$categoryCode/$code/${it.code}" }
 
     private var currentProductId = startId
     private var addedSeo = mutableSetOf<String>()
@@ -33,7 +33,7 @@ class ProductCollection (
         description: String,
         size: Size = Size(),
         weight: Double = 0.0,
-        category: String
+        subcategory: String
     ) : Product {
         return Product(
             productId = currentProductId++,
@@ -49,7 +49,7 @@ class ProductCollection (
             price = price,
             sku = sku,
             description = description,
-            category = category
+            subcategory = subcategory
         )
     }
 
@@ -64,7 +64,7 @@ class ProductCollection (
     fun download(url: String, uniqName: String) {
         val page = SPCachedPage(SPSimplePage(url))
 
-        colors.forEach {
+        subcategories.forEach {
             val doc = page
                 .onLoad { interactor: SPPageInteractor -> manufacturer.onLoad?.invoke(interactor, it.index) }
                 .save("./result/${uniqName}/${it.code}.html")
@@ -76,7 +76,7 @@ class ProductCollection (
                 SPCachedRemoteFiles(remoteFiles).download("./result/${uniqName}/${it.code}")
             }
 
-            if (colors.indexOf(it) == 0) {
+            if (subcategories.indexOf(it) == 0) {
                 OCExcelWb(products).save("./result/${uniqName}.xls")
             }
         }

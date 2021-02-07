@@ -5,7 +5,7 @@ data class Product internal constructor(
     val name: String = "",
     val model: String = "",
     val image: Image,
-    val category: String = "",
+    val subcategory: String = "",
     val price: Price = Price.ZERO,
     val sku: String = "",
     val weight: Double = .0,
@@ -20,7 +20,7 @@ data class Product internal constructor(
     val additionalImages = if (collection.imageFolders.size > 1)
         collection.imageFolders.subList(1, collection.imageFolders.size).map { "$it/${image.fileName}" }
         else emptyList()
-    val options = linkedMapOf("Цвет" to collection.colors.map { it.name })
+    val options = linkedMapOf("Цвет" to collection.subcategories.map { it.name })
     val defaultOptionValues = options.map { Pair(it.key, it.value[0]) }.toMap()
     val categoryId = collection.categoryId
     val manufacturer = collection.manufacturer.name

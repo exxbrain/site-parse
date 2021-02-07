@@ -79,7 +79,7 @@ internal class RivaProductParserTest {
             Executable { assertEquals(36.0, product.length) },
             Executable { assertEquals(Image("https://riva.ru/upload/iblock/8eb/%D0%92.%D0%90-1.jpg", "v_a-1"), product.image) },
             Executable { assertEquals("v_a-1.jpg", product.image.fileName) },
-            Executable { assertEquals("Стелажи", product.category) },
+            Executable { assertEquals("Стелажи", product.subcategory) },
         )
     }
 }
