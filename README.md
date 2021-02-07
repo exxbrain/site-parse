@@ -1,4 +1,4 @@
-# Web page parser for my own needs
+# Web page parser for Open Cart
 Generates xls files for import to Open Cart.
 
 Example:
