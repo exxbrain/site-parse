@@ -21,7 +21,7 @@ class ProductCollection (
     val imageFolders = colors.map { "/catalog/$categoryCode/$code/${it.code}" }
 
     private var currentProductId = startId
-    private var seoIndex = 1
+    private var addedSeo = mutableSetOf<String>()
 
     fun product(
         image: Image,
@@ -35,12 +35,11 @@ class ProductCollection (
         weight: Double = 0.0,
         category: String
     ) : Product {
-
         return Product(
             productId = currentProductId++,
             collection = this,
             image = image,
-            seo = seo + seoIndex++,
+            seo = calculateSeo(seo),
             width = size.width,
             height = size.height,
             length = size.length,
@@ -52,6 +51,16 @@ class ProductCollection (
             description = description,
             category = category
         )
+    }
+
+    private fun calculateSeo(seo: String): String {
+        var res = seo
+        if (!addedSeo.contains(res)) {
+            addedSeo.add(res)
+            return res
+        }
+        res = "$seo-1"
+        return calculateSeo(res)
     }
 
     fun download(url: String, uniqName: String) {

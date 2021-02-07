@@ -24,7 +24,7 @@ internal class DownloadCollectionTest {
                 startId = 1500,
                 categoryId = 98,
                 colors = Colors.colors("Венге цаво", "Бук артиан", "Орех гварнери"),
-                categoryCode = "result/korpusnaya_mebel/operativnaya_mebel",
+                categoryCode = "korpusnaya_mebel/operativnaya_mebel",
                 uniqName = "riva/nova_s",
                 url = "https://riva.ru/catalog/nova_s/"
             )
@@ -32,7 +32,7 @@ internal class DownloadCollectionTest {
                 startId = 1700,
                 categoryId = 99,
                 colors = Colors.colors("Клен", "Венге цаво", "Белый", "Груша ароза", "Клен металлик", "Орех гварнери", "Серый", "Венге металлик"),
-                categoryCode = "result/korpusnaya_mebel/operativnaya_mebel",
+                categoryCode = "korpusnaya_mebel/operativnaya_mebel",
                 uniqName = "riva/riva",
                 url = "https://riva.ru/catalog/riva/"
             )
@@ -66,7 +66,7 @@ internal class DownloadCollectionTest {
                     "Вяз благородный",
                     "Дуб наварра",
                     ),
-                categoryCode = "result/korpusnaya_mebel/operativnaya_mebel",
+                categoryCode = "korpusnaya_mebel/operativnaya_mebel",
                 uniqName = "riva/metal_system",
                 url = "https://riva.ru/catalog/metal_system/"
             )
@@ -78,7 +78,7 @@ internal class DownloadCollectionTest {
                     "Венге цаво",
                     "Клен",
                 ),
-                categoryCode = "result/korpusnaya_mebel/kabinet",
+                categoryCode = "korpusnaya_mebel/kabinet",
                 uniqName = "riva/first",
                 url = "https://riva.ru/catalog/first1/"
             )
@@ -91,7 +91,7 @@ internal class DownloadCollectionTest {
                     "Суар Темный",
                     "Снежная Патина",
                 ),
-                categoryCode = "result/korpusnaya_mebel/kabinet",
+                categoryCode = "korpusnaya_mebel/kabinet",
                 uniqName = "riva/yalta",
                 url = "https://riva.ru/catalog/yalta/"
             )
@@ -103,7 +103,7 @@ internal class DownloadCollectionTest {
                     "Венге металлик",
                     "Клен металлик",
                 ),
-                categoryCode = "result/korpusnaya_mebel/reseptions",
+                categoryCode = "korpusnaya_mebel/reseptions",
                 uniqName = "riva/reseptions-riva",
                 url = "https://riva.ru/catalog/riva1/"
             )

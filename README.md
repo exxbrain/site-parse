@@ -3,7 +3,6 @@ Generates xls files for import to Open Cart.
 
 Example:
 
-
         Manufacturer("Riva")
             .onLoad { interactor, index ->
                 interactor.click(".variants__label", index)
